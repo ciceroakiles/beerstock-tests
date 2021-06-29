@@ -18,4 +18,4 @@ Testes unitários:
 
 	* Retorno de JSON após o GET (sucesso) ou erro caso não seja encontrado
 
-	* Retorno de lista no GET (vazia ou não)
+	* Retorno de lista após o GET (vazia ou não)
