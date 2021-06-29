@@ -66,22 +66,4 @@ public class CervejaService {
             throw new CervExceptNomeReg(name);
         }
     }
-
-    /*
-    // Busca por id (usa o método verificaCerveja)
-    public CervejaDTO findById(Long id) throws CervExceptId {
-        return cervejaMapper.toDto(verificaCerveja(id));
-    }
-    // Atualização (usa os métodos verificaCerveja e criaMessageResponse)
-    public MessageResponseDTO updateById(Long id, CervejaDTO cervejaDTO) throws CervExceptId {
-        verificaCerveja(id);
-        Cerveja updated = cervejaMapper.toModel(cervejaDTO);
-        Cerveja salva = cervejaRepositorio.save(updated);
-        return criaMessageResponse("Objeto <Cerveja> atualizado (ID " + salva.getId() + ")");
-    }
-    // Mensagem de resposta dos métodos CREATE e UPDATE
-    private MessageResponseDTO criaMessageResponse(String msg) throws CervExceptId {
-        return MessageResponseDTO.builder().message(msg).build();
-    }
-    */
 }

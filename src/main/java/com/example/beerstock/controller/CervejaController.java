@@ -50,19 +50,6 @@ public class CervejaController {
     public void deleteById(@PathVariable Long id) throws CervExceptNaoEncont {
         cervejaService.deleteById(id);
     }
-
-    /*
-    // Busca cerveja por id
-    @GetMapping("/{id}")
-    public CervejaDTO findById(@PathVariable Long id) throws CervExceptId {
-        return cervejaService.findById(id);
-    }
-    // Atualiza cerveja
-    @PutMapping("/{id}")
-    public MessageResponseDTO updateById(@PathVariable Long id, @RequestBody @Valid CervejaDTO cervejaDTO) throws CervExceptId {
-        return cervejaService.updateById(id, cervejaDTO);
-    }
-    */
 }
 
 // Teste
