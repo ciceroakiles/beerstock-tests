@@ -10,11 +10,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mock;
+//import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // Classe de teste (serviço)
 @ExtendWith(MockitoExtension.class)
@@ -30,6 +33,7 @@ public class CervejaServiceTest {
     @InjectMocks
     private CervejaService cervejaService;
 
+    // Teste unitário: POST (novo objeto)
     @Test
     void criarAoInformarObjeto() throws CervExceptNomeReg {
         // Construção do objeto fake e conversão
@@ -47,8 +51,29 @@ public class CervejaServiceTest {
         // Objeto criado? Pode lançar exceção
         CervejaDTO cervejaCriada = cervejaService.criaCerveja(cervejaDTO);
         
-        // Compara campos (os objetos precisam ser os mesmos)
-        assertEquals(cervejaEsperada.getId(), cervejaCriada.getId());
-        assertEquals(cervejaEsperada.getName(), cervejaCriada.getName());
+        // Comparação de campos (os objetos precisam ser os mesmos)
+        /*
+        // Assert usando Mockito
+        //assertEquals(cervejaEsperada.getId(), cervejaCriada.getId());
+        //assertEquals(cervejaEsperada.getName(), cervejaCriada.getName());
+        */
+        // Assert usando Hamcrest e imports estáticos
+        assertThat(cervejaCriada.getId(), is(equalTo(cervejaEsperada.getId())));
+        assertThat(cervejaCriada.getName(), is(equalTo(cervejaEsperada.getName())));
+        assertThat(cervejaCriada.getQtde(), is(equalTo(cervejaEsperada.getQtde())));
+    }
+
+    // Teste unitário: POST (objeto já existente)
+    @Test
+    void jaRegistrada() {
+        // Construção do objeto fake e conversão
+        CervejaDTO cervejaEsperada = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        Cerveja cervejaDuplicada = cervejaMapper.toModel(cervejaEsperada);
+
+        // Espera-se que dê erro e lance a exceção após buscar por nome
+        when(cervejaRepositorio.findByName(cervejaEsperada.getName()))
+            .thenReturn(Optional.of(cervejaDuplicada));
+        
+        assertThrows(CervExceptNomeReg.class, () -> cervejaService.criaCerveja(cervejaEsperada));
     }
 }
