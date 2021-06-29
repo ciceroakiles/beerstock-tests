@@ -48,6 +48,7 @@ public class CervejaControllerTest {
             .build();
     }
 
+    // Teste unitário: controller POST - normal
     @Test
     void PostCriaCerveja() throws Exception {
         // Objeto fake passa pelo serviço
@@ -68,6 +69,7 @@ public class CervejaControllerTest {
             .andExpect(jsonPath("$.marca", is(cervejaDTO.getMarca())));
     }
 
+    // Teste unitário: controller POST - campo nulo
     @Test
     void PostCriaCervejaSemCampo() throws Exception {
         // Objeto fake criado, mas sem um campo

@@ -10,6 +10,8 @@ Testes unitários:
 
 	* Testado lançamento de exceção após POST duplicado
 
+	* Testado o retorno após busca por nome via GET
+
 * CervejaControllerTest.java
 
 	* Retorno de JSON após o POST (sucesso)
