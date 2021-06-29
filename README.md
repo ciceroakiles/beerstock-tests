@@ -10,7 +10,7 @@ Testes unitários:
 
 	* Testado o retorno após busca por nome via GET (nome encontrado, nome não encontrado)
 
-	* Testado o retorno de lista com objetos
+	* Testado o retorno de lista com ou sem objetos
 
 * CervejaControllerTest.java
 

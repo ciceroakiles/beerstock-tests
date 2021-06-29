@@ -99,7 +99,7 @@ public class CervejaServiceTest {
         assertThrows(CervExceptNaoEncont.class, () -> cervejaService.findByName(cervejaEsperadaDTO.getName()));
     }
 
-    // Teste unitário (service) - listAll()
+    // Teste unitário (service) - listAll(): não vazia
     @Test
     void listaCheia() {
         // Construção do objeto fake e conversão
@@ -112,5 +112,16 @@ public class CervejaServiceTest {
         List<CervejaDTO> cervejaListDTO = cervejaService.listAll();
         assertThat(cervejaListDTO, is(not(empty())));
         assertThat(cervejaListDTO.get(0), is(equalTo(cervEspEncontradaDTO)));
+    }
+
+    // Teste unitário (service) - listAll(): vazia
+    @Test
+    void listaVazia() {
+        // Espera-se que retorne lista vazia
+        when(cervejaRepositorio.findAll())
+            .thenReturn(Collections.EMPTY_LIST);
+        // Espera-se que a lista esteja vazia
+        List<CervejaDTO> cervejaListDTO = cervejaService.listAll();
+        assertThat(cervejaListDTO, is(empty()));
     }
 }
