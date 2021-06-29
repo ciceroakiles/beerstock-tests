@@ -9,3 +9,7 @@ Testes unitários:
 	* Testado o processo necessário para o POST
 
 	* Testado lançamento de exceção após POST duplicado
+
+* CervejaControllerTest.java
+
+	* Retorno de JSON após o POST

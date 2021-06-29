@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 public class CervejaServiceTest {
 
-    private static final long ID_INVALIDO = 1L;
-
     @Mock
     private CervejaRepositorio cervejaRepositorio;
 
