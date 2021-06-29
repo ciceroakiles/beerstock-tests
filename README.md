@@ -5,5 +5,7 @@ Projeto base com testes unitários para validar uma API REST de gerenciamento de
 Testes unitários:
 
 * CervejaServiceTest.java
+
 ** Testado o processo necessário para o POST
+
 ** Testado lançamento de exceção após POST duplicado
