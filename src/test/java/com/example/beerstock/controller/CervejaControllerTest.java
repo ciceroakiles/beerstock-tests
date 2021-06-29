@@ -53,7 +53,7 @@ public class CervejaControllerTest {
         // Objeto fake passa pelo serviço
         CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         when(cervejaService.criaCerveja(cervejaDTO))
-            .thenReturn(cervejaDTO);        
+            .thenReturn(cervejaDTO);
         // Mock do método POST (imports estáticos)
         // Pode lançar exceção
         mockMvc.perform(
@@ -66,5 +66,19 @@ public class CervejaControllerTest {
             // Validação de campos
             .andExpect(jsonPath("$.name", is(cervejaDTO.getName())))
             .andExpect(jsonPath("$.marca", is(cervejaDTO.getMarca())));
+    }
+
+    @Test
+    void PostCriaCervejaSemCampo() throws Exception {
+        // Objeto fake criado, mas sem um campo
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        cervejaDTO.setMarca(null);
+        mockMvc.perform(
+            post(CAMINHO)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(cervejaDTO))
+            )
+            // "Bad Request" esperado
+            .andExpect(status().isBadRequest());
     }
 }

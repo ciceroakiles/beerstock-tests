@@ -12,4 +12,6 @@ Testes unitários:
 
 * CervejaControllerTest.java
 
-	* Retorno de JSON após o POST
+	* Retorno de JSON após o POST (sucesso)
+
+	* Retorno de erro caso um dos campos esteja vazio
