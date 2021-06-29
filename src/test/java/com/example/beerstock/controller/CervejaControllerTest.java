@@ -4,6 +4,7 @@ import com.example.beerstock.builder.CervejaDTOBuilder;
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.service.CervejaService;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -123,5 +124,39 @@ public class CervejaControllerTest {
             )
             // "Not Found" esperado
             .andExpect(status().isNotFound());
+    }
+
+    // Teste unitário (controller) - GET: lista
+    @Test
+    void GetListAll() throws Exception {
+        // Objeto fake
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        // Retorna lista de objetos (pode lançar exceção)
+        when(cervejaService.listAll())
+            .thenReturn(Collections.singletonList(cervejaDTO));
+        // Mock do método GET (imports estáticos)
+        mockMvc.perform(
+                get(CAMINHO)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            // Validação de campos
+            .andExpect(jsonPath("$[0].name", is(cervejaDTO.getName())))
+            .andExpect(jsonPath("$[0].marca", is(cervejaDTO.getMarca())))
+            .andExpect(jsonPath("$[0].tipo", is(cervejaDTO.getTipo().toString())));
+    }
+
+    // Teste unitário (controller) - GET: lista vazia
+    @Test
+    void GetEmptyList() throws Exception {
+        // Retorna lista de objetos (pode lançar exceção)
+        when(cervejaService.listAll())
+            .thenReturn(Collections.EMPTY_LIST);
+        // Mock do método GET (imports estáticos)
+        mockMvc.perform(
+                get(CAMINHO)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk());
     }
 }
