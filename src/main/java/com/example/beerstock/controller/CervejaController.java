@@ -1,8 +1,7 @@
 package com.example.beerstock.controller;
 
 import com.example.beerstock.dto.request.CervejaDTO;
-import com.example.beerstock.exception.CervExceptId;
-import com.example.beerstock.exception.CervExceptNomeNaoEncont;
+import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.exception.CervExceptNomeReg;
 import com.example.beerstock.service.CervejaService;
 import java.util.List;
@@ -41,14 +40,14 @@ public class CervejaController {
 
     // Busca cerveja por nome
     @GetMapping("/{nome}")
-    public CervejaDTO findByName(@PathVariable String nome) throws CervExceptNomeNaoEncont {
+    public CervejaDTO findByName(@PathVariable String nome) throws CervExceptNaoEncont {
         return cervejaService.findByName(nome);
     }
 
     // Deleta cerveja por id
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) throws CervExceptId {
+    public void deleteById(@PathVariable Long id) throws CervExceptNaoEncont {
         cervejaService.deleteById(id);
     }
 

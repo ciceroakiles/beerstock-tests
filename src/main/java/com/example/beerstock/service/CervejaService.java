@@ -2,8 +2,7 @@ package com.example.beerstock.service;
 
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.entity.Cerveja;
-import com.example.beerstock.exception.CervExceptId;
-import com.example.beerstock.exception.CervExceptNomeNaoEncont;
+import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.exception.CervExceptNomeReg;
 import com.example.beerstock.mapper.CervejaMapper;
 import com.example.beerstock.repository.CervejaRepositorio;
@@ -41,23 +40,23 @@ public class CervejaService {
     }
 
     // Busca por nome
-    public CervejaDTO findByName(String name) throws CervExceptNomeNaoEncont {
+    public CervejaDTO findByName(String name) throws CervExceptNaoEncont {
         Cerveja encontrada = cervejaRepositorio.findByName(name)
-            .orElseThrow(() -> new CervExceptNomeNaoEncont(name));
+            .orElseThrow(() -> new CervExceptNaoEncont(name));
         return cervejaMapper.toDto(encontrada);
     }
 
     // Deleção (usa o método verificaCerveja)
-    public void deleteById(Long id) throws CervExceptId {
+    public void deleteById(Long id) throws CervExceptNaoEncont {
         verificaCerveja(id);
         cervejaRepositorio.deleteById(id);
     }
 
     // Verifica se a cerveja existe
-    private Cerveja verificaCerveja(Long id) throws CervExceptId {
+    private Cerveja verificaCerveja(Long id) throws CervExceptNaoEncont {
         // Caso não encontre, lança a exceção (expressão lambda)
         Cerveja cervejaExiste = cervejaRepositorio.findById(id)
-            .orElseThrow(() -> new CervExceptId(id));
+            .orElseThrow(() -> new CervExceptNaoEncont(id));
         return cervejaExiste;
     }
     // Por nome

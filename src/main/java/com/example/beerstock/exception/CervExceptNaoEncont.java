@@ -4,9 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class CervExceptId extends Exception {
+public class CervExceptNaoEncont extends Exception {
     
-    public CervExceptId(Long id) {
+    public CervExceptNaoEncont(Long id) {
         super("ID " + id + " não encontrado");
+    }
+
+    public CervExceptNaoEncont(String nome) {
+        super("Cerveja " + nome + " não encontrada");
     }
 }
