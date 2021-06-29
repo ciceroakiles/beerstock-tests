@@ -7,6 +7,8 @@ import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.exception.CervExceptNomeReg;
 import com.example.beerstock.mapper.CervejaMapper;
 import com.example.beerstock.repository.CervejaRepositorio;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 //import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,7 +33,7 @@ public class CervejaServiceTest {
     @InjectMocks
     private CervejaService cervejaService;
 
-    // Teste unitário (service) - POST: novo objeto
+    // Teste unitário (service) - criaCerveja(): novo objeto
     @Test
     void criarAoInformarObjeto() throws CervExceptNomeReg {
         // Construção do objeto fake e conversão
@@ -58,9 +59,9 @@ public class CervejaServiceTest {
         assertThat(cervejaCriada.getQtde(), is(equalTo(cervejaEsperada.getQtde())));
     }
 
-    // Teste unitário (service) - POST: objeto já existente
+    // Teste unitário (service) - criaCerveja(): objeto já existente
     @Test
-    void jaRegistrada() {
+    void criarJaRegistrada() {
         // Construção do objeto fake e conversão
         CervejaDTO cervejaEsperada = CervejaDTOBuilder.builder().build().toCervejaDTO();
         Cerveja cervejaDuplicada = cervejaMapper.toModel(cervejaEsperada);
@@ -71,7 +72,7 @@ public class CervejaServiceTest {
         assertThrows(CervExceptNomeReg.class, () -> cervejaService.criaCerveja(cervejaEsperada));
     }
 
-    // Teste unitário (service) - GET: nome do objeto é válido
+    // Teste unitário (service) - findByName(): nome do objeto é válido
     @Test
     void retornoOkAposBuscar() throws CervExceptNaoEncont {
         // Construção do objeto fake e conversão
@@ -86,7 +87,7 @@ public class CervejaServiceTest {
         assertThat(cervejaEncontradaDTO, is(equalTo(cervEspEncontradaDTO)));
     }
 
-    // Teste unitário (service) - GET: nome do objeto é inválido
+    // Teste unitário (service) - findByName(): nome do objeto é inválido
     @Test
     void retornoFalhouAposBuscar() {
         // Construção do objeto fake
@@ -96,5 +97,20 @@ public class CervejaServiceTest {
             .thenReturn(Optional.empty());
         // Precisa lançar a exceção
         assertThrows(CervExceptNaoEncont.class, () -> cervejaService.findByName(cervejaEsperadaDTO.getName()));
+    }
+
+    // Teste unitário (service) - listAll()
+    @Test
+    void listaCheia() {
+        // Construção do objeto fake e conversão
+        CervejaDTO cervEspEncontradaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        Cerveja cervejaEsperada = cervejaMapper.toModel(cervEspEncontradaDTO);
+        // Espera-se que retorne lista de objetos
+        when(cervejaRepositorio.findAll())
+            .thenReturn(Collections.singletonList(cervejaEsperada));
+        // Espera-se que a lista não esteja vazia (tendo ao menos um elemento)
+        List<CervejaDTO> cervejaListDTO = cervejaService.listAll();
+        assertThat(cervejaListDTO, is(not(empty())));
+        assertThat(cervejaListDTO.get(0), is(equalTo(cervEspEncontradaDTO)));
     }
 }

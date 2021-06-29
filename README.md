@@ -10,6 +10,8 @@ Testes unitários:
 
 	* Testado o retorno após busca por nome via GET (nome encontrado, nome não encontrado)
 
+	* Testado o retorno de lista com objetos
+
 * CervejaControllerTest.java
 
 	* Retorno de JSON após o POST (sucesso) ou erro caso um dos campos esteja vazio
