@@ -6,14 +6,12 @@ Testes unitários:
 
 * CervejaServiceTest.java
 
-	* Testado o processo necessário para o POST
-
-	* Testado lançamento de exceção após POST duplicado
+	* Testado o processo necessário para o POST e o lançamento de exceção em caso de elemento duplicado
 
 	* Testado o retorno após busca por nome via GET (nome encontrado, nome não encontrado)
 
 * CervejaControllerTest.java
 
-	* Retorno de JSON após o POST (sucesso)
+	* Retorno de JSON após o POST (sucesso) ou erro caso um dos campos esteja vazio
 
-	* Retorno de erro caso um dos campos esteja vazio
+	* Retorno de JSON após o GET (sucesso)

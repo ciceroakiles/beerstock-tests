@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import static com.example.beerstock.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,7 +49,7 @@ public class CervejaControllerTest {
             .build();
     }
 
-    // Teste unitário controller - POST: normal
+    // Teste unitário (controller) - POST: normal
     @Test
     void PostCriaCerveja() throws Exception {
         // Objeto fake passa pelo serviço
@@ -66,15 +67,17 @@ public class CervejaControllerTest {
             .andExpect(status().isCreated())
             // Validação de campos
             .andExpect(jsonPath("$.name", is(cervejaDTO.getName())))
-            .andExpect(jsonPath("$.marca", is(cervejaDTO.getMarca())));
+            .andExpect(jsonPath("$.marca", is(cervejaDTO.getMarca())))
+            .andExpect(jsonPath("$.tipo", is(cervejaDTO.getTipo().toString())));
     }
 
-    // Teste unitário controller - POST: campo nulo
+    // Teste unitário (controller) - POST: campo nulo
     @Test
     void PostCriaCervejaSemCampo() throws Exception {
         // Objeto fake criado, mas sem um campo
         CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         cervejaDTO.setMarca(null);
+        // Mock do método POST (imports estáticos)
         mockMvc.perform(
             post(CAMINHO)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -82,5 +85,25 @@ public class CervejaControllerTest {
             )
             // "Bad Request" esperado
             .andExpect(status().isBadRequest());
+    }
+
+    // Teste unitário (controller) - GET: nome do objeto é válido
+    @Test
+    void GetNomeOk() throws Exception {
+        // Objeto fake
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        // Retorna o objeto (pode lançar exceção)
+        when(cervejaService.findByName(cervejaDTO.getName()))
+            .thenReturn(cervejaDTO);
+        // Mock do método GET (imports estáticos)
+        mockMvc.perform(
+                get(CAMINHO + "/" + cervejaDTO.getName())
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            // Validação de campos
+            .andExpect(jsonPath("$.name", is(cervejaDTO.getName())))
+            .andExpect(jsonPath("$.marca", is(cervejaDTO.getMarca())))
+            .andExpect(jsonPath("$.tipo", is(cervejaDTO.getTipo().toString())));
     }
 }

@@ -32,7 +32,7 @@ public class CervejaServiceTest {
     @InjectMocks
     private CervejaService cervejaService;
 
-    // Teste unitário service - POST: novo objeto
+    // Teste unitário (service) - POST: novo objeto
     @Test
     void criarAoInformarObjeto() throws CervExceptNomeReg {
         // Construção do objeto fake e conversão
@@ -58,7 +58,7 @@ public class CervejaServiceTest {
         assertThat(cervejaCriada.getQtde(), is(equalTo(cervejaEsperada.getQtde())));
     }
 
-    // Teste unitário service - POST: objeto já existente
+    // Teste unitário (service) - POST: objeto já existente
     @Test
     void jaRegistrada() {
         // Construção do objeto fake e conversão
@@ -71,7 +71,7 @@ public class CervejaServiceTest {
         assertThrows(CervExceptNomeReg.class, () -> cervejaService.criaCerveja(cervejaEsperada));
     }
 
-    // Teste unitário service - GET: nome do objeto é válido
+    // Teste unitário (service) - GET: nome do objeto é válido
     @Test
     void retornoOkAposBuscar() throws CervExceptNaoEncont {
         // Construção do objeto fake e conversão
@@ -86,9 +86,9 @@ public class CervejaServiceTest {
         assertThat(cervejaEncontradaDTO, is(equalTo(cervEspEncontradaDTO)));
     }
 
-    // Teste unitário service - GET: nome do objeto é inválido
+    // Teste unitário (service) - GET: nome do objeto é inválido
     @Test
-    void retornoFalhouAposBuscar() throws CervExceptNaoEncont {
+    void retornoFalhouAposBuscar() {
         // Construção do objeto fake
         CervejaDTO cervejaEsperadaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         // Espera-se que retorne o objeto, dado o nome
