@@ -6,6 +6,6 @@ Testes unitários:
 
 * CervejaServiceTest.java
 
-** Testado o processo necessário para o POST
+	* Testado o processo necessário para o POST
 
-** Testado lançamento de exceção após POST duplicado
+	* Testado lançamento de exceção após POST duplicado
