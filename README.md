@@ -14,4 +14,4 @@ Testes unitários:
 
 	* Retorno de JSON após o POST (sucesso) ou erro caso um dos campos esteja vazio
 
-	* Retorno de JSON após o GET (sucesso)
+	* Retorno de JSON após o GET (sucesso) ou erro caso não seja encontrado

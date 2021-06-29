@@ -2,6 +2,7 @@ package com.example.beerstock.controller;
 
 import com.example.beerstock.builder.CervejaDTOBuilder;
 import com.example.beerstock.dto.request.CervejaDTO;
+import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.service.CervejaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -105,5 +106,22 @@ public class CervejaControllerTest {
             .andExpect(jsonPath("$.name", is(cervejaDTO.getName())))
             .andExpect(jsonPath("$.marca", is(cervejaDTO.getMarca())))
             .andExpect(jsonPath("$.tipo", is(cervejaDTO.getTipo().toString())));
+    }
+
+    // Teste unitário (controller) - GET: nome do objeto não registrado
+    @Test
+    void GetNomeNaoEncontrado() throws Exception {
+        // Objeto fake
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        // Lança exceção
+        when(cervejaService.findByName(cervejaDTO.getName()))
+            .thenThrow(CervExceptNaoEncont.class);
+        // Mock do método GET (imports estáticos)
+        mockMvc.perform(
+                get(CAMINHO + "/" + cervejaDTO.getName())
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            // "Not Found" esperado
+            .andExpect(status().isNotFound());
     }
 }
