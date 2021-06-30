@@ -32,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CervejaControllerTest {
     
     private static final String CAMINHO = "/api/v1/cervejas";
-    private static final long VALID_ID = 1L;
     private static final long INVALID_ID = 2L;
     private static final String AUMENTAR = "/mais";
     private static final String REDUZIR = "/menos";
@@ -154,7 +153,7 @@ public class CervejaControllerTest {
     void GetEmptyList() throws Exception {
         // Retorna lista de objetos (pode lançar exceção)
         when(cervejaService.listAll())
-            .thenReturn(Collections.EMPTY_LIST);
+            .thenReturn(Collections.emptyList());
         // Mock do método GET (imports estáticos)
         mockMvc.perform(
                 get(CAMINHO)

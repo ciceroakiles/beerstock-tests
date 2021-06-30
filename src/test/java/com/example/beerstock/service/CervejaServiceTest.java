@@ -3,6 +3,7 @@ package com.example.beerstock.service;
 import com.example.beerstock.builder.CervejaDTOBuilder;
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.entity.Cerveja;
+import com.example.beerstock.exception.CervExceptLimiteQuant;
 import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.exception.CervExceptNomeReg;
 import com.example.beerstock.mapper.CervejaMapper;
@@ -122,7 +123,7 @@ public class CervejaServiceTest {
     void listaVazia() {
         // Espera-se que retorne lista vazia
         when(cervejaRepositorio.findAll())
-            .thenReturn(Collections.EMPTY_LIST);
+            .thenReturn(Collections.emptyList());
         // Espera-se que a lista esteja vazia
         List<CervejaDTO> cervejaListDTO = cervejaService.listAll();
         assertThat(cervejaListDTO, is(empty()));
@@ -143,5 +144,37 @@ public class CervejaServiceTest {
         // Verifica se os métodos findById() e deleteById() foram chamados apenas uma vez
         verify(cervejaRepositorio, times(1)).findById(cervEspDeletadaDTO.getId());
         verify(cervejaRepositorio, times(1)).deleteById(cervEspDeletadaDTO.getId());
+    }
+
+    /*
+     * TDD - Test Driven Development
+     */
+    // Aumentar estoque
+    @Test
+    void AumentarEstoque() throws CervExceptNaoEncont, CervExceptLimiteQuant {
+        CervejaDTO cervejaEsperadaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        Cerveja cervejaEsperada = cervejaMapper.toModel(cervejaEsperadaDTO);
+        // Retorna Optional, salva objeto
+        when(cervejaRepositorio.findById(cervejaEsperada.getId()))
+            .thenReturn(Optional.of(cervejaEsperada));
+        when(cervejaRepositorio.save(cervejaEsperada))
+            .thenReturn(cervejaEsperada);
+        int aumento = 10;
+        int qtdeEsperada = cervejaEsperadaDTO.getQtde() + aumento;
+        // Novo método para o service
+        CervejaDTO cervAumentouDTO = cervejaService.increment(cervejaEsperadaDTO.getId(), aumento);
+        assertThat(qtdeEsperada, equalTo(cervAumentouDTO.getQtde()));
+        assertThat(qtdeEsperada, lessThan(cervejaEsperada.getMax()));
+    }
+
+    // Soma das quantidades não pode exceder o máximo
+    @Test
+    void QuantSomaExcedeMax() {
+        CervejaDTO cervejaEsperadaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        Cerveja cervejaEsperada = cervejaMapper.toModel(cervejaEsperadaDTO);
+        when(cervejaRepositorio.findById(cervejaEsperada.getId()))
+            .thenReturn(Optional.of(cervejaEsperada));
+        int aumento = 45;
+        assertThrows(CervExceptLimiteQuant.class, () -> cervejaService.increment(cervejaEsperada.getId(), aumento));
     }
 }

@@ -2,6 +2,7 @@ package com.example.beerstock.service;
 
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.entity.Cerveja;
+import com.example.beerstock.exception.CervExceptLimiteQuant;
 import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.exception.CervExceptNomeReg;
 import com.example.beerstock.mapper.CervejaMapper;
@@ -65,5 +66,19 @@ public class CervejaService {
         if (jaSalva.isPresent()) {
             throw new CervExceptNomeReg(name);
         }
+    }
+
+    /*
+     * TDD - Método criado após AumentarEstoque()
+     */
+    public CervejaDTO increment(Long id, int aumento) throws CervExceptNaoEncont, CervExceptLimiteQuant {
+        Cerveja cervAumento = verificaCerveja(id);
+        int total = cervAumento.getQtde() + aumento;
+        if (total <= cervAumento.getMax()) {
+            cervAumento.setQtde(cervAumento.getQtde() + aumento);
+            Cerveja cervejaSalva = cervejaRepositorio.save(cervAumento);
+            return cervejaMapper.toDto(cervejaSalva);
+        }
+        throw new CervExceptLimiteQuant(id, aumento);
     }
 }
