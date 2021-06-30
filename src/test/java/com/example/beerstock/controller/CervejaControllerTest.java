@@ -2,6 +2,7 @@ package com.example.beerstock.controller;
 
 import com.example.beerstock.builder.CervejaDTOBuilder;
 import com.example.beerstock.dto.request.CervejaDTO;
+import com.example.beerstock.dto.request.QuantidadeDTO;
 import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.service.CervejaService;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,9 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CervejaControllerTest {
     
     private static final String CAMINHO = "/api/v1/cervejas";
+    private static final long VALID_ID = 1L;
     private static final long INVALID_ID = 2L;
     private static final String AUMENTAR = "/mais";
-    private static final String REDUZIR = "/menos";
+    //private static final String REDUZIR = "/menos";
 
     private MockMvc mockMvc;
 
@@ -190,5 +193,32 @@ public class CervejaControllerTest {
             )
             // "Not Found" esperado
             .andExpect(status().isNotFound());
+    }
+
+    /*
+     * TDD - Test Driven Development
+     */
+    // PATCH: aumentar quantidade
+    @Test
+    void PatchAumentaQuantidade() throws Exception {
+        // Criação dos objetos
+        QuantidadeDTO qtdeDTO = QuantidadeDTO.builder().qtde(10).build();
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        cervejaDTO.setQtde(cervejaDTO.getQtde() + qtdeDTO.getQtde());
+        // Possível lançamento de exceção
+        when(cervejaService.increment(VALID_ID, qtdeDTO.getQtde()))
+            .thenReturn(cervejaDTO);
+        // Realização do PATCH
+        mockMvc.perform(
+                patch(CAMINHO + "/" + VALID_ID + AUMENTAR)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(qtdeDTO))
+            )
+            .andExpect(status().isOk())
+            // Validação de campos
+            .andExpect(jsonPath("$.name", is(cervejaDTO.getName())))
+            .andExpect(jsonPath("$.marca", is(cervejaDTO.getMarca())))
+            .andExpect(jsonPath("$.tipo", is(cervejaDTO.getTipo().toString())))
+            .andExpect(jsonPath("$.qtde", is(cervejaDTO.getQtde())));
     }
 }

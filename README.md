@@ -23,3 +23,7 @@ Testes unitários:
 	* Retorno de lista após o GET (vazia ou não)
 
 	* Retorno de código HTTP 204 ou HTTP 404 após o DELETE
+
+Recursos adicionais:
+
+	* Método PATCH feito via TDD

@@ -1,6 +1,8 @@
 package com.example.beerstock.controller;
 
 import com.example.beerstock.dto.request.CervejaDTO;
+import com.example.beerstock.dto.request.QuantidadeDTO;
+import com.example.beerstock.exception.CervExceptLimiteQuant;
 import com.example.beerstock.exception.CervExceptNaoEncont;
 import com.example.beerstock.exception.CervExceptNomeReg;
 import com.example.beerstock.service.CervejaService;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,6 +52,14 @@ public class CervejaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) throws CervExceptNaoEncont {
         cervejaService.deleteById(id);
+    }
+
+    /*
+     * TDD - PATCH: método criado após PatchAumentaQuantidade()
+     */
+    @PatchMapping("/{id}/mais")
+    public CervejaDTO increment(@PathVariable Long id, @RequestBody @Valid QuantidadeDTO qtdeDTO) throws CervExceptNaoEncont, CervExceptLimiteQuant {
+        return cervejaService.increment(id, qtdeDTO.getQtde());
     }
 }
 
