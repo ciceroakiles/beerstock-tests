@@ -2,9 +2,9 @@ package com.example.beerstock.service;
 
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.entity.Cerveja;
-import com.example.beerstock.exception.CervExceptLimiteQuant;
-import com.example.beerstock.exception.CervExceptNaoEncont;
-import com.example.beerstock.exception.CervExceptNomeReg;
+import com.example.beerstock.exception.CervLimiteQuantException;
+import com.example.beerstock.exception.CervNaoEncontException;
+import com.example.beerstock.exception.CervNomeRegException;
 import com.example.beerstock.mapper.CervejaMapper;
 import com.example.beerstock.repository.CervejaRepositorio;
 import java.util.List;
@@ -24,7 +24,7 @@ public class CervejaService {
     }
 
     // Inserção de nova cerveja
-    public CervejaDTO criaCerveja(CervejaDTO cervejaDTO) throws CervExceptNomeReg {
+    public CervejaDTO criaCerveja(CervejaDTO cervejaDTO) throws CervNomeRegException {
         verificaCervejaReg(cervejaDTO.getName());
         Cerveja beforeSave = cervejaMapper.toModel(cervejaDTO);
         Cerveja salva = cervejaRepositorio.save(beforeSave);
@@ -41,37 +41,37 @@ public class CervejaService {
     }
 
     // Busca por nome
-    public CervejaDTO findByName(String name) throws CervExceptNaoEncont {
+    public CervejaDTO findByName(String name) throws CervNaoEncontException {
         Cerveja encontrada = cervejaRepositorio.findByName(name)
-            .orElseThrow(() -> new CervExceptNaoEncont(name));
+            .orElseThrow(() -> new CervNaoEncontException(name));
         return cervejaMapper.toDto(encontrada);
     }
 
     // Deleção (usa o método verificaCerveja)
-    public void deleteById(Long id) throws CervExceptNaoEncont {
+    public void deleteById(Long id) throws CervNaoEncontException {
         verificaCerveja(id);
         cervejaRepositorio.deleteById(id);
     }
 
     // Verifica se a cerveja existe
-    private Cerveja verificaCerveja(Long id) throws CervExceptNaoEncont {
+    private Cerveja verificaCerveja(Long id) throws CervNaoEncontException {
         // Caso não encontre, lança a exceção (expressão lambda)
         Cerveja cervejaExiste = cervejaRepositorio.findById(id)
-            .orElseThrow(() -> new CervExceptNaoEncont(id));
+            .orElseThrow(() -> new CervNaoEncontException(id));
         return cervejaExiste;
     }
     // Por nome
-    private void verificaCervejaReg(String name) throws CervExceptNomeReg {
+    private void verificaCervejaReg(String name) throws CervNomeRegException {
         Optional<Cerveja> jaSalva = cervejaRepositorio.findByName(name);
         if (jaSalva.isPresent()) {
-            throw new CervExceptNomeReg(name);
+            throw new CervNomeRegException(name);
         }
     }
 
     /*
      * TDD - Método criado após AumentarEstoque()
      */
-    public CervejaDTO increment(Long id, int aumento) throws CervExceptNaoEncont, CervExceptLimiteQuant {
+    public CervejaDTO increment(Long id, int aumento) throws CervNaoEncontException, CervLimiteQuantException {
         Cerveja cervAumento = verificaCerveja(id);
         int total = cervAumento.getQtde() + aumento;
         if (total <= cervAumento.getMax()) {
@@ -79,6 +79,6 @@ public class CervejaService {
             Cerveja cervejaSalva = cervejaRepositorio.save(cervAumento);
             return cervejaMapper.toDto(cervejaSalva);
         }
-        throw new CervExceptLimiteQuant(id, aumento);
+        throw new CervLimiteQuantException(id, aumento);
     }
 }

@@ -3,7 +3,7 @@ package com.example.beerstock.controller;
 import com.example.beerstock.builder.CervejaDTOBuilder;
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.dto.request.QuantidadeDTO;
-import com.example.beerstock.exception.CervExceptNaoEncont;
+import com.example.beerstock.exception.CervNaoEncontException;
 import com.example.beerstock.service.CervejaService;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,7 +121,7 @@ public class CervejaControllerTest {
         CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         // Lança exceção
         when(cervejaService.findByName(cervejaDTO.getName()))
-            .thenThrow(CervExceptNaoEncont.class);
+            .thenThrow(CervNaoEncontException.class);
         // Mock do método GET (imports estáticos)
         mockMvc.perform(
                 get(CAMINHO + "/" + cervejaDTO.getName())
@@ -185,7 +185,7 @@ public class CervejaControllerTest {
     @Test
     void DeleteNomeNaoEncontrado() throws Exception {
         // Lança exceção
-        doThrow(CervExceptNaoEncont.class).when(cervejaService).deleteById(INVALID_ID);
+        doThrow(CervNaoEncontException.class).when(cervejaService).deleteById(INVALID_ID);
         // Mock do método DELETE (imports estáticos)
         mockMvc.perform(
                 delete(CAMINHO + "/" + INVALID_ID)

@@ -3,9 +3,9 @@ package com.example.beerstock.service;
 import com.example.beerstock.builder.CervejaDTOBuilder;
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.entity.Cerveja;
-import com.example.beerstock.exception.CervExceptLimiteQuant;
-import com.example.beerstock.exception.CervExceptNaoEncont;
-import com.example.beerstock.exception.CervExceptNomeReg;
+import com.example.beerstock.exception.CervLimiteQuantException;
+import com.example.beerstock.exception.CervNaoEncontException;
+import com.example.beerstock.exception.CervNomeRegException;
 import com.example.beerstock.mapper.CervejaMapper;
 import com.example.beerstock.repository.CervejaRepositorio;
 import java.util.Collections;
@@ -39,7 +39,7 @@ public class CervejaServiceTest {
 
     // Teste unitário (service) - criaCerveja(): novo objeto
     @Test
-    void criarAoInformarObjeto() throws CervExceptNomeReg {
+    void criarAoInformarObjeto() throws CervNomeRegException {
         // Construção do objeto fake e conversão
         CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         Cerveja cervejaEsperada = cervejaMapper.toModel(cervejaDTO);
@@ -73,12 +73,12 @@ public class CervejaServiceTest {
         when(cervejaRepositorio.findByName(cervejaEsperada.getName()))
             .thenReturn(Optional.of(cervejaDuplicada));
         // Espera-se que lance a exceção após buscar por nome
-        assertThrows(CervExceptNomeReg.class, () -> cervejaService.criaCerveja(cervejaEsperada));
+        assertThrows(CervNomeRegException.class, () -> cervejaService.criaCerveja(cervejaEsperada));
     }
 
     // Teste unitário (service) - findByName(): nome do objeto é válido
     @Test
-    void retornoOkAposBuscar() throws CervExceptNaoEncont {
+    void retornoOkAposBuscar() throws CervNaoEncontException {
         // Construção do objeto fake e conversão
         CervejaDTO cervEspEncontradaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         Cerveja cervejaEsperada = cervejaMapper.toModel(cervEspEncontradaDTO);
@@ -100,7 +100,7 @@ public class CervejaServiceTest {
         when(cervejaRepositorio.findByName(cervejaEsperadaDTO.getName()))
             .thenReturn(Optional.empty());
         // Precisa lançar a exceção
-        assertThrows(CervExceptNaoEncont.class, () -> cervejaService.findByName(cervejaEsperadaDTO.getName()));
+        assertThrows(CervNaoEncontException.class, () -> cervejaService.findByName(cervejaEsperadaDTO.getName()));
     }
 
     // Teste unitário (service) - listAll(): não vazia
@@ -131,7 +131,7 @@ public class CervejaServiceTest {
 
     // Teste unitário (service) - deleteById()
     @Test
-    void deletarCervejaOk() throws CervExceptNaoEncont {
+    void deletarCervejaOk() throws CervNaoEncontException {
         // Construção do objeto fake e conversão
         CervejaDTO cervEspDeletadaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         Cerveja cervejaDeletada = cervejaMapper.toModel(cervEspDeletadaDTO);
@@ -151,7 +151,7 @@ public class CervejaServiceTest {
      */
     // Aumentar estoque
     @Test
-    void AumentarEstoque() throws CervExceptNaoEncont, CervExceptLimiteQuant {
+    void AumentarEstoque() throws CervNaoEncontException, CervLimiteQuantException {
         CervejaDTO cervejaEsperadaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
         Cerveja cervejaEsperada = cervejaMapper.toModel(cervejaEsperadaDTO);
         // Retorna Optional, salva objeto
@@ -175,6 +175,6 @@ public class CervejaServiceTest {
         when(cervejaRepositorio.findById(cervejaEsperada.getId()))
             .thenReturn(Optional.of(cervejaEsperada));
         int aumento = 45;
-        assertThrows(CervExceptLimiteQuant.class, () -> cervejaService.increment(cervejaEsperada.getId(), aumento));
+        assertThrows(CervLimiteQuantException.class, () -> cervejaService.increment(cervejaEsperada.getId(), aumento));
     }
 }

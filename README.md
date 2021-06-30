@@ -26,4 +26,4 @@ Testes unitários:
 
 Recursos adicionais:
 
-	* Método PATCH feito via TDD
+* Método PATCH feito via TDD

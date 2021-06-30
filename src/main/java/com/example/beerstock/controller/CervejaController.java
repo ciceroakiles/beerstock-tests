@@ -2,9 +2,9 @@ package com.example.beerstock.controller;
 
 import com.example.beerstock.dto.request.CervejaDTO;
 import com.example.beerstock.dto.request.QuantidadeDTO;
-import com.example.beerstock.exception.CervExceptLimiteQuant;
-import com.example.beerstock.exception.CervExceptNaoEncont;
-import com.example.beerstock.exception.CervExceptNomeReg;
+import com.example.beerstock.exception.CervLimiteQuantException;
+import com.example.beerstock.exception.CervNaoEncontException;
+import com.example.beerstock.exception.CervNomeRegException;
 import com.example.beerstock.service.CervejaService;
 import java.util.List;
 import javax.validation.Valid;
@@ -31,7 +31,7 @@ public class CervejaController {
     // Cria cerveja
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CervejaDTO criaCerveja(@RequestBody @Valid CervejaDTO cervejaDTO) throws CervExceptNomeReg {
+    public CervejaDTO criaCerveja(@RequestBody @Valid CervejaDTO cervejaDTO) throws CervNomeRegException {
         return cervejaService.criaCerveja(cervejaDTO);
     }
 
@@ -43,14 +43,14 @@ public class CervejaController {
 
     // Busca cerveja por nome
     @GetMapping("/{nome}")
-    public CervejaDTO findByName(@PathVariable String nome) throws CervExceptNaoEncont {
+    public CervejaDTO findByName(@PathVariable String nome) throws CervNaoEncontException {
         return cervejaService.findByName(nome);
     }
 
     // Deleta cerveja por id
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) throws CervExceptNaoEncont {
+    public void deleteById(@PathVariable Long id) throws CervNaoEncontException {
         cervejaService.deleteById(id);
     }
 
@@ -58,7 +58,7 @@ public class CervejaController {
      * TDD - PATCH: método criado após PatchAumentaQuantidade()
      */
     @PatchMapping("/{id}/mais")
-    public CervejaDTO increment(@PathVariable Long id, @RequestBody @Valid QuantidadeDTO qtdeDTO) throws CervExceptNaoEncont, CervExceptLimiteQuant {
+    public CervejaDTO increment(@PathVariable Long id, @RequestBody @Valid QuantidadeDTO qtdeDTO) throws CervNaoEncontException, CervLimiteQuantException {
         return cervejaService.increment(id, qtdeDTO.getQtde());
     }
 }
