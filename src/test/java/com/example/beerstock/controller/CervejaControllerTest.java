@@ -18,7 +18,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import static com.example.beerstock.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -158,5 +161,35 @@ public class CervejaControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk());
+    }
+
+    // Teste unitário (controller) - DELETE: nome do objeto é válido
+    @Test
+    void DeleteNomeOk() throws Exception {
+        // Objeto fake
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        // Se foi possível deletar, não é preciso fazer mais nada
+        doNothing().when(cervejaService).deleteById(cervejaDTO.getId());
+        // Mock do método DELETE (imports estáticos)
+        mockMvc.perform(
+                delete(CAMINHO + "/" + cervejaDTO.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            // "No Content" esperado
+            .andExpect(status().isNoContent());
+    }
+
+    // Teste unitário (controller) - DELETE: nome do objeto não registrado
+    @Test
+    void DeleteNomeNaoEncontrado() throws Exception {
+        // Lança exceção
+        doThrow(CervExceptNaoEncont.class).when(cervejaService).deleteById(INVALID_ID);
+        // Mock do método DELETE (imports estáticos)
+        mockMvc.perform(
+                delete(CAMINHO + "/" + INVALID_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            // "Not Found" esperado
+            .andExpect(status().isNotFound());
     }
 }

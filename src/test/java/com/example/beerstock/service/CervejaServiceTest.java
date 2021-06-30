@@ -15,6 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -92,7 +95,7 @@ public class CervejaServiceTest {
     void retornoFalhouAposBuscar() {
         // Construção do objeto fake
         CervejaDTO cervejaEsperadaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
-        // Espera-se que retorne o objeto, dado o nome
+        // Espera-se que não retorne objeto, dado o nome
         when(cervejaRepositorio.findByName(cervejaEsperadaDTO.getName()))
             .thenReturn(Optional.empty());
         // Precisa lançar a exceção
@@ -123,5 +126,22 @@ public class CervejaServiceTest {
         // Espera-se que a lista esteja vazia
         List<CervejaDTO> cervejaListDTO = cervejaService.listAll();
         assertThat(cervejaListDTO, is(empty()));
+    }
+
+    // Teste unitário (service) - deleteById()
+    @Test
+    void deletarCervejaOk() throws CervExceptNaoEncont {
+        // Construção do objeto fake e conversão
+        CervejaDTO cervEspDeletadaDTO = CervejaDTOBuilder.builder().build().toCervejaDTO();
+        Cerveja cervejaDeletada = cervejaMapper.toModel(cervEspDeletadaDTO);
+        // Se foi possível deletar, não é preciso fazer mais nada
+        when(cervejaRepositorio.findById(cervEspDeletadaDTO.getId()))
+            .thenReturn(Optional.of(cervejaDeletada));
+        doNothing().when(cervejaRepositorio).deleteById(cervEspDeletadaDTO.getId());
+        // Espera-se que a deleção tenha sido feita (pode lançar exceção)
+        cervejaService.deleteById(cervEspDeletadaDTO.getId());
+        // Verifica se os métodos findById() e deleteById() foram chamados apenas uma vez
+        verify(cervejaRepositorio, times(1)).findById(cervEspDeletadaDTO.getId());
+        verify(cervejaRepositorio, times(1)).deleteById(cervEspDeletadaDTO.getId());
     }
 }
