@@ -1,5 +1,3 @@
-https://digitalinnovation.one/bootcamps/gft-start-2-java
-
 Projeto base com testes unitários para validar uma API REST de gerenciamento de estoques de cerveja.
 
 Testes unitários:
@@ -27,3 +25,8 @@ Testes unitários:
 Recursos adicionais:
 
 * Método PATCH feito via TDD
+
+<br/>
+https://digitalinnovation.one/bootcamps/gft-start-2-java
+
+https://digitalinnovation.one/bootcamps/everis-new-talents-java
